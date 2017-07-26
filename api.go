@@ -48,4 +48,6 @@ type Client interface {
 	ReadFIFOQueue(address uint16) (results []byte, err error)
 	// Setting new slave id
 	SetSlaveId(slave byte)
+	// Diagnostics function code
+	Diagnostics(subfunction uint16, value []byte) (results []byte, err error)
 }

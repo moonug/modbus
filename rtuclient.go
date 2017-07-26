@@ -44,6 +44,10 @@ type rtuPackager struct {
 	SlaveId byte
 }
 
+func (mb *rtuPackager) SetSlaveId(slave byte) {
+	mb.SlaveId = slave
+}
+
 // Encode encodes PDU in a RTU frame:
 //  Slave Address   : 1 byte
 //  Function        : 1 byte
@@ -127,7 +131,7 @@ func (mb *rtuSerialTransporter) Send(aduRequest []byte) (aduResponse []byte, err
 	function := aduRequest[1]
 	functionFail := aduRequest[1] & 0x80
 	bytesToRead := calculateResponseLength(aduRequest)
-	time.Sleep(mb.calculateDelay(len(aduRequest) + bytesToRead))
+	//time.Sleep(mb.calculateDelay(len(aduRequest) + bytesToRead))
 
 	var n int
 	var n1 int

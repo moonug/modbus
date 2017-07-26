@@ -26,6 +26,34 @@ const (
 	FuncCodeReadWriteMultipleRegisters = 23
 	FuncCodeMaskWriteRegister          = 22
 	FuncCodeReadFIFOQueue              = 24
+
+	// Diagnostics
+	FuncCodeDiagnostics = 0x08
+)
+
+const (
+	// Sub-function codes
+	SubFuncReturnQueryData = iota
+	SubFuncRestartCommunicationsOption
+	SubFuncReturnDiagnosticRegister
+	SubFuncChangeASCIIInputDelimiter
+	SubFuncForceListenOnlyMode
+	_ // 0x05 Reserved
+	_ // 0x06 Reserved
+	_ // 0x07 Reserved
+	_ // 0x08 Reserved
+	_ // 0x09 Reserved
+	SubFuncClearCountersAndDiagnosticRegister
+	SubFuncReturnBusMessageCount
+	SubFuncReturnBusCommunicaionErrorCount
+	SubFuncReturnBusExeptionCount
+	SubFuncReturnSlaveMessageCount
+	SubFuncReturnSlaveNoResponseCount
+	SubFuncReturnSlaveNAKCount
+	SubFuncReturnSlaveBusyCount
+	SubFuncReturnBusCharacterOverrunCount
+	_ // 0x13 Reserved
+	SubFuncClearOverrunCounterAndFlag
 )
 
 const (
@@ -85,6 +113,7 @@ type Packager interface {
 	Encode(pdu *ProtocolDataUnit) (adu []byte, err error)
 	Decode(adu []byte) (pdu *ProtocolDataUnit, err error)
 	Verify(aduRequest []byte, aduResponse []byte) (err error)
+	SetSlaveId(slave byte)
 }
 
 // Transporter specifies the transport layer.

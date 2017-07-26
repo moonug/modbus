@@ -30,6 +30,10 @@ func NewClient2(packager Packager, transporter Transporter) Client {
 	return &client{packager: packager, transporter: transporter}
 }
 
+func (mb *client) SetSlaveId(slave byte) {
+	mb.packager.SetSlaveId(slave)
+}
+
 // Request:
 //  Function code         : 1 byte (0x01)
 //  Starting address      : 2 bytes
@@ -429,6 +433,40 @@ func (mb *client) ReadFIFOQueue(address uint16) (results []byte, err error) {
 		return
 	}
 	results = response.Data[4:]
+	return
+}
+
+// Request:
+//  Function code    : 1 byte (0x08)
+//  Subfunction code : 2 bytes
+//  Data             : Nx2 bytes
+// Response:
+//  Function code    : 1 byte (0x08)
+//  Subfunction code : 2 bytes
+//  Data             : Nx2 bytes
+func (mb *client) Diagnostics(subfunction uint16, value []byte) (results []byte, err error) {
+	data := make([]byte, 2+len(value))
+	binary.BigEndian.PutUint16(data[0:], subfunction)
+	copy(data[2:], value[:])
+	request := ProtocolDataUnit{
+		FunctionCode: FuncCodeDiagnostics,
+		Data:         data,
+	}
+	response, err := mb.send(&request)
+	if err != nil {
+		return
+	}
+
+	if len(response.Data) != 3+len(value) {
+		err = fmt.Errorf("modbus: response data size '%v' does not match expected '%v'", len(response.Data), 3+len(value))
+		return
+	}
+	respValue := binary.BigEndian.Uint16(response.Data)
+	if subfunction != respValue {
+		err = fmt.Errorf("modbus: response sub-function '%v' does not match request '%v'", respValue, subfunction)
+		return
+	}
+	results = response.Data[2:]
 	return
 }
 

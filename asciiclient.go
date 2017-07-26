@@ -46,6 +46,10 @@ type asciiPackager struct {
 	SlaveId byte
 }
 
+func (mb *asciiPackager) SetSlaveId(slave byte) {
+	mb.SlaveId = slave
+}
+
 // Encode encodes PDU in a ASCII frame:
 //  Start           : 1 char
 //  Address         : 2 chars

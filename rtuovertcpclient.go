@@ -3,7 +3,7 @@ package modbus
 // RTUoverTCPClientHandler implements Packager and Transporter interface.
 type RTUoverTCPClientHandler struct {
 	rtuPackager
-	tcpTransporter
+	rtuTcpTransporter
 }
 
 // NewRTUoverTCPClientHandler allocates a new RTUoverTCPClientHandler.

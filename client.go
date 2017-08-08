@@ -444,6 +444,7 @@ func (mb *client) ReadFIFOQueue(address uint16) (results []byte, err error) {
 //  Function code    : 1 byte (0x08)
 //  Subfunction code : 2 bytes
 //  Data             : Nx2 bytes
+// NB: This function tested for subfunction RestartCommunicationsOption (0x01)
 func (mb *client) Diagnostics(subfunction uint16, value []byte) (results []byte, err error) {
 	data := make([]byte, 2+len(value))
 	binary.BigEndian.PutUint16(data[0:], subfunction)
@@ -457,8 +458,8 @@ func (mb *client) Diagnostics(subfunction uint16, value []byte) (results []byte,
 		return
 	}
 
-	if len(response.Data) != 3+len(value) {
-		err = fmt.Errorf("modbus: response data size '%v' does not match expected '%v'", len(response.Data), 3+len(value))
+	if len(response.Data) != 2+len(value) {
+		err = fmt.Errorf("modbus: response data size '%v' does not match expected '%v'", len(response.Data), 2+len(value))
 		return
 	}
 	respValue := binary.BigEndian.Uint16(response.Data)
